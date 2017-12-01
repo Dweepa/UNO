@@ -72,14 +72,19 @@ __________________________________________________________
 ## DATA STRUCTURES:
 
 For main pile, **Array**
+
 •	Randomize,
 
 For discard pile: **Stack**
+
 •	Push
+
 •	Peek
 
-For Player hand card: **Singly linked list: **
+For Player hand card: **Singly linked list:**
+
 •	insert at the end
+
 •	Delete by info
 
 
