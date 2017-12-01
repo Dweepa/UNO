@@ -26,9 +26,11 @@ Everything other than the above 14. IT CAN ONLY POP.
 IT CAN PUSH AND POP.
 
 ##### KEYS:
-== Main Draw
-~~ Computer
-— Player
+*== Main Draw*
+
+*~~ Computer*
+
+*— Player*
 
 ##### GAME BEGINS:
 ==> yellow 6
@@ -83,7 +85,7 @@ For discard pile: **Stack**
 
 For Player hand card: **Singly linked list:**
 
-•	insert at the end
+•	Insert at the end
 
 •	Delete by info
 
