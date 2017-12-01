@@ -32,7 +32,7 @@ IT CAN PUSH AND POP.
 ##### KEYS:
 *== Main Draw*
 
-* ~~Computer*
+*~~Computer*
 
 *— Player*
 
