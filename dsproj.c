@@ -32,6 +32,7 @@ void printCard(CARD card);
 void putACard(PLAYER* player,STACK* discard,int number, char* colour,int comp);
 void drawACard(PLAYER* player ,int cardNum, CARD* deck);
 int drawCardNum(int number);
+int specialFunctions(int number);
 
 
 void makeUsed1(CARD*deck, int n);
@@ -56,8 +57,7 @@ void randomize ( CARD arr[], int n );
 
 int main()
 {
-    CARD deck[108] = {
-        { 0, "RED" },
+    CARD deck[108] = {{ 0, "RED" },
         { 1, "RED" },
         { 1, "RED" },
         { 2, "RED" },
@@ -157,12 +157,16 @@ int main()
         { 20, "YELLOW" },
         { 30, "YELLOW" },
         { 30, "YELLOW" },
+        { 40, "WHITE" },
+        { 40, "WHITE" },
+        { 40, "WHITE" },
+        { 40, "WHITE" },
         { 50, "WHITE" },
         { 50, "WHITE" },
         { 50, "WHITE" },
         { 50, "WHITE" }
     };
-   
+    printf("no of cards: %lu\n",(sizeof(deck)/sizeof(CARD)));
     STACK discard;
     randomize(deck,108);
     init_screen(&discard,deck);
@@ -189,16 +193,28 @@ int main()
         clear();
         printf("\ntop of pile:\n");
         printCard(*(discard.top));
-        printf("\nPlayer\n");
+        printf("\n\nPlayer\n");
         printLinkedList(&player1);
-        printf("\nComp\n");
+        printf("\n\nComp\n");
         printLinkedList(&player2);
         printf("\n\n               PLAYER\n");
         if(getchar()=='\n')
+        {
             play(&player1,&discard,deck,*(discard.top));
+            if(specialFunctions((discard.top)->number))
+            {
+                play(&player1,&discard,deck,*(discard.top));
+            }
+        }
         printf("\n\n             COMPUTER\n");
         if(getchar()=='\n')
+        {
             computerPlay(&player2,&discard,deck,*(discard.top));
+            if(specialFunctions((discard.top)->number))
+            {
+                computerPlay(&player2,&discard,deck,*(discard.top));
+            }
+        }
     }
     if(player1.handCard==NULL)
     {
@@ -212,7 +228,7 @@ int main()
     printf("\n");
 }
 
-//=============================================================================
+/*=========================================================================*/
 
 //clears the screen hand cards to the two players, puts a card to discard pile from the main pile
 
@@ -222,7 +238,6 @@ void init_screen(STACK* discard, CARD* deck)
     push(discard,deck[14].number,deck[14].colour);
     printCard(deck[14]);
 }
-
 void printScreen(int playerNumber)
 {
     printf("PLAYER %d's TURN\n\n",playerNumber);
@@ -234,7 +249,7 @@ void clear(void)
     printf("\033[%d;%dH", 0, 0);
 }
 
-//=============================================================================
+/*=========================================================================*/
 
 //CARD FUNCTIONS
 void printCard(CARD card)
@@ -253,6 +268,7 @@ void putACard(PLAYER* player,STACK* discard,int number, char* colour,int comp)
 void drawACard(PLAYER* player ,int cardNum, CARD* deck)
 {
     int i=0;
+    printf("card num: %d\n",cardNum);
     for(i=0;i<cardNum;i++)
     {
         CARD temp = pop(deck);
@@ -292,7 +308,7 @@ int specialFunctions(int number)
     }
 }
 
-//=============================================================================
+/*=========================================================================*/
 //DECK FUNCTIONS
 
 //used=1
@@ -318,18 +334,35 @@ CARD pop(CARD* deck)
 }
 
 
-//=============================================================================
+/*=========================================================================*/
 
+/*Both play functions handle
+ *50: Draw four: the next player draws four cards and puts any card of any colour on the deck.
+ *40: Wild: the next player puts any card of any colour on the deck.
+ *30: Draw two: The next player draws 2 cards.
+ *20: Skip: The player plays again.
+ *10: Reverse: The player plays again.
+ */
 
-//Does what a player should do when it is her move
+//Computer play function.
 void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
 {
-    //printf("1 ");
+    
     CARD* nodePtr= player->handCard;
+    if(drawCardNum(stackTop.number)!=1)
+    {
+        printf("\nCOMPUTER DRAWS %d CARD(s)",drawCardNum(stackTop.number));
+        drawACard(player,drawCardNum(stackTop.number),deck);
+    }
+    if(strcmp("WHITE",stackTop.colour)==0)
+    {
+        putACard(player,discard,nodePtr->number,nodePtr->colour,1);
+    }
+
     while((nodePtr != NULL) && strcmp(nodePtr->colour,stackTop.colour)!=0 && nodePtr->number!=stackTop.number)
     {
         nodePtr = nodePtr->next;
-        //printf("2 ");
+        
     }
     printf("result of play function: \n");
     if(nodePtr==NULL)
@@ -339,10 +372,10 @@ void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
         {
             head=head->next;
         }
-              
-        //printf("\n\n num card %d\n\n",drawCardNum(stackTop.number));
+        
         if(head==NULL)
               {
+                  printf("\nCOMPUTER DRAWS %d CARD(s)",drawCardNum(stackTop.number));
                   drawACard(player,drawCardNum(stackTop.number),deck);
                   CARD* head=player->handCard;
                   if(head->number == stackTop.number || strcmp(head->colour,stackTop.colour)==0)
@@ -351,10 +384,10 @@ void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
                   }
                   else
                   {
-                      //printf("7 ");
+                      
                       return;
                   }
-                  //printf("3 ");
+                  
               }
         else
               {
@@ -366,22 +399,32 @@ void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
     else
     {
         putACard(player,discard,nodePtr->number,nodePtr->colour,1);
-        //printf("4 ");
     }
-    //printLinkedList(player);
-    
 }
 
-
+//Player play function.
 void play(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
 {
-    //printf("1 ");
     CARD* nodePtr= player->handCard;
+    
+    if(drawCardNum(stackTop.number)!=1)
+    {
+        printf("\nPLAYER DRAWS %d CARD(s)",drawCardNum(stackTop.number));
+        drawACard(player,drawCardNum(stackTop.number),deck);
+    }
+    
+    if(strcmp("WHITE",stackTop.colour)==0)
+    {
+        putACard(player,discard,nodePtr->number,nodePtr->colour,0);
+        return;
+    }
+    
     while((nodePtr != NULL) && strcmp(nodePtr->colour,stackTop.colour)!=0 && nodePtr->number!=stackTop.number)
     {
         nodePtr = nodePtr->next;
-        //printf("2 ");
     }
+    
+    
     printf("result of play function: \n");
     if(nodePtr==NULL)
     {
@@ -393,7 +436,8 @@ void play(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
         }
         if(head==NULL)
         {
-            drawACard(player,drawCardNum(stackTop.number),deck);
+            printf("\nPLAYER DRAWS %d CARD(s)",drawCardNum(stackTop.number));
+            drawACard(player,1,deck);
             CARD* head=player->handCard;
             if(head->number == stackTop.number || strcmp(head->colour,stackTop.colour)==0)
             {
@@ -419,47 +463,53 @@ void play(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
         scanf("%d",&number);
         printf("Enter colour: ");
         scanf("%s",colour);
-        putACard(player,discard,nodePtr->number,nodePtr->colour,0);
-        //printLinkedList(player);
+        putACard(player,discard,number,colour,0);
+        
     }
-    //printLinkedList(player);
     
 }
 
-//=============================================================================
+/*=========================================================================*/
+
 //LINKED LIST
 
 //deletes a node using the info given
 void deleteNode(PLAYER* player, int number, char* colour, int computer)
 {
+    
     CARD *current = player->handCard, *previous;
+    
     CARD *head = player->handCard;
     if (head == NULL) {
         printf("Error : Invalid node pointer !!!\n");
         return;
     }
     
-    if ((current->number == number)&& strcmp(current->colour,colour)==0 )
+    if ((current->number == number) && strcmp(current->colour,colour)==0 )
     {
+        
+        CARD* t1 =current;
         player->handCard = current->next;
-        free(current);
+        free(t1);
         return;
     }
     
-    if(computer)
+    if(computer==1)
     {
-        while ((current != NULL )&& (current->number != number) && (strcmp(current->colour,colour)))
+        while ((current != NULL )&& ((current->number != number) && (strcmp(current->colour,colour))!=0))
         {
+            printf("comp\n");
             previous = current;
             current = current->next;
         }
     }
-    else
-    {
-        while ((current != NULL )&& (current->number != number || strcmp(current->colour,colour)))
+    else if(computer==0)
+        
+    { while ((current != NULL )&& (current->number != number||strcmp(current->colour,colour)))
         {
-            previous = current;
+           previous = current;
             current = current->next;
+            
         }
     }
     
@@ -467,9 +517,9 @@ void deleteNode(PLAYER* player, int number, char* colour, int computer)
         printf("not found in Linked List\n");
         return;
     }
-    
+    CARD* t =current;
     previous->next = current->next;
-    free(current);
+    free(t);
     
     
     
@@ -486,6 +536,8 @@ void insertNode(PLAYER* player, int number, char* colour)
     newNode->next = head;
     player->handCard = newNode;
 }
+
+//Allots 7 cards to each player at the start of the game.
 void create7(PLAYER* player, CARD* deck)
 {
     int i,count=0;
@@ -499,8 +551,10 @@ void create7(PLAYER* player, CARD* deck)
         }
     }
 }
-//Prints the list
-void printLinkedList(PLAYER* player) {
+
+//Prints all the cards of a particular player.
+void printLinkedList(PLAYER* player)
+{
     CARD* nodePtr= player->handCard;
     while (nodePtr != NULL)
     {
@@ -511,7 +565,7 @@ void printLinkedList(PLAYER* player) {
     }
 }
 
-//=============================================================================
+/*=========================================================================*/
 //Adds to the stack checks for duplicates. if duplicates are present it is invalid
 void push(STACK* stack,int number, char colour[])
 {
@@ -535,7 +589,8 @@ void push(STACK* stack,int number, char colour[])
     printCard(*newCard);
     printf("\n");
 }
-//=============================================================================
+
+/*=========================================================================*/
 //SHUFFLE FUNCTIONS
 // A utility function to swap to integers
 void swap (CARD *a, CARD *b)
@@ -558,7 +613,4 @@ void randomize ( CARD arr[], int n )
     }
 }
 
-//=============================================================================
-
-
-
+/*=========================================================================*/

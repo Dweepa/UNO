@@ -321,7 +321,7 @@ void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
             head=head->next;
         }
         
-        //printf("\n\n num card %d\n\n",drawCardNum(stackTop.number));
+        printf("\n\n num card %d\n\n",drawCardNum(stackTop.number));
         if(head==NULL)
         {
             drawACard(player,drawCardNum(stackTop.number),deck);
@@ -445,7 +445,6 @@ void deleteNode(PLAYER* player, int number, char* colour, int computer)
     {
         while ((current != NULL )&& ((strcmp(current->colour,colour))||(current->number != number)))
         {
-           // printf("here\n");
             previous = current;
             current = current->next;
         }

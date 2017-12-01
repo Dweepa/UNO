@@ -424,6 +424,7 @@ void computerPlay(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
 
 int play(PLAYER* player, STACK* discard, CARD* deck, CARD stackTop)
 {
+    
     CARD* nodePtr= player->handCard;
 	while((nodePtr != NULL) && strcmp(nodePtr->colour,stackTop.colour)!=0 && nodePtr->number!=stackTop.number)
    	{
@@ -531,8 +532,9 @@ int deleteNode(PLAYER* player, int number, char* colour, int computer)
 
     if ((current->number == number)&& strcmp(current->colour,colour)==0 )
     {
+        CARD* t =current;
         player->handCard = current->next;
-        free(current);
+        free(t);
         return 1;
     }
 
@@ -558,11 +560,9 @@ int deleteNode(PLAYER* player, int number, char* colour, int computer)
         return 0;
     }
 
+    CARD* t =current;
     previous->next = current->next;
-    free(current);
-
-
-
+    free(t);
 }
 
 //adds a node with the given info to the end
