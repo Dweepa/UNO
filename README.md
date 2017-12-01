@@ -5,10 +5,14 @@
 Number of Players: 2 you and the computer
 
 #### Dealing cards:
-RED: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
-BLUE: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
-YELLOW: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
-GREEN: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
+1. RED: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
+
+2. BLUE: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
+
+3. YELLOW: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
+
+4. GREEN: 0,1,2,3,4,5,6,7,8,9, skip, reverse, draw two.
+
 2 wild cards , 2 wild draw four’s.
 
 - Deal seven cards to computer and to player.
@@ -28,7 +32,7 @@ IT CAN PUSH AND POP.
 ##### KEYS:
 *== Main Draw*
 
-*~~ Computer*
+* ~~Computer*
 
 *— Player*
 
